@@ -1,0 +1,13 @@
+Jane - tiny interpreter developed for education purposes
+
+Tested on:
+	x86_64	GNU/Linux gcc 4.4.4
+	Win32	mingw-gcc 3.3.4
+	Win32	MS VC++ 2008 Express Compiler
+	
+Code from trunk may be broken or may don't build on some configurations.
+
+Include Farooq Mela's libdict, see README.libdict and directory lib/rb_tree.
+
+Published under BSD license
+(c) 2010, Ilya Ponetayev (instenet AT gmail DOT com)
