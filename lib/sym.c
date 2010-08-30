@@ -35,10 +35,16 @@ struct Symbol * sym_alloc_deep(int type, int is_constant, char * label, void * d
 	struct Symbol * sym;
 	
 	sym = sym_alloc_shallow(type, is_constant, NULL, NULL);
-	sym->label = (char *) jmalloc(strlen(label) + 1);
-	strcpy(sym->label, label);
-	sym->data = jmalloc(data_size);
-	memcpy((char *)sym->data, (char *)data, data_size);
+	if (label != NULL) {
+		sym->label = (char *) jmalloc(strlen(label) + 1);
+		strcpy(sym->label, label);
+	} else
+		sym->label = NULL;
+	if (data != NULL) {
+		sym->data = jmalloc(data_size);
+		memcpy((char *)sym->data, (char *)data, data_size);
+	} else
+		sym->data = NULL;
 	return sym;
 }
 

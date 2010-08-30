@@ -42,11 +42,15 @@ int inf_check_brackets(char * expr) {
 }
 
 int inf_get_priority(int op) {
-	if ((op == SYM_OPS_ADD) || (op == SYM_OPS_SUB))
-		return PRIO_LOW;
-	if ((op == SYM_OPS_MUL) || (op == SYM_OPS_DIV))
-		return PRIO_MID;
-	return PRIO_HIGH;
+	switch (op) {
+		case	SYM_OPS_EXP		:	return PRIO_HIGHER;
+		case	SYM_OPS_MUL		:	return PRIO_UPPER_MIDDLE;
+		case	SYM_OPS_DIV		:	return PRIO_UPPER_MIDDLE;
+		case	SYM_OPS_ADD		:	return PRIO_MIDDLE;
+		case	SYM_OPS_SUB		:	return PRIO_MIDDLE;
+		default					:	break;
+	}
+	return -1;
 }
 
 int smb_is_function(char * smb) {
@@ -62,6 +66,7 @@ int is_digit(char ch) {
 int is_op(char ch) {
 	return ((ch == '(') || (ch == ')') || (ch == '+') || (ch == '-') || (ch == '*') || (ch == '/') || (ch == '^')) ? 1 : 0;
 }
+
 
 int is_symbol(char ch) {
 	return (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z')) || (ch == '_')) ? 1 : 0;
@@ -98,11 +103,11 @@ struct WorkFlow * inf_transform_to_reverse_postfix(char * expr) {
 	char * nmb;
 	
 	while (expr[i] != '\0') {
-		if (is_digit(expr[i]) || is_symbol(expr[i])) {
+		
+		if ((is_digit(expr[i]) || is_symbol(expr[i]))) {
 			++i;
 			continue;
-		}
-		else {
+		} else {
 			nmb = (char *) jmalloc(len);
 			strncpy(nmb, expr + last, i - last);
 			nmb[i - last] = '\0';
@@ -176,7 +181,6 @@ struct WorkFlow * inf_transform_to_reverse_postfix(char * expr) {
 				default:
 							break;
 			}
-			
 		}
 		++i;
 	}

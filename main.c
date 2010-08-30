@@ -56,12 +56,20 @@ int main(int argc, char ** argv) {
 			case SYM_OPS_MUL:	printf("*"); break;
 			case SYM_OPS_DIV:	printf("/"); break;
 			case SYM_OPS_EXP:	printf("^"); break;
+			case SYM_MBOP_BAE:	printf(">="); break;
+			case SYM_MBOP_SAE:	printf("<="); break;
+			case SYM_MBOP_SSM:	printf("<"); break;
+			case SYM_MBOP_SBG:	printf(">"); break;
+			case SYM_MBOP_EQ:	printf("=="); break;
+			case SYM_MBOP_NOTEQ:	printf("!="); break;
 			case SYM_FUNC:		printf("%s", (char *)wf->ops[i].data); break;
 			default:			break;
 		}
 		printf(" ");
 	}
 	puts("");
+	
+	
 	
 	s = process_postfix_workflow(wf, symtab);
 	
@@ -88,6 +96,7 @@ int main(int argc, char ** argv) {
 	sym_free(s);
 	workflow_free(wf);
 	free(test);
+	
 	
 	//printf("\n%lu\n", memstat_getstat()->allocations);
 	

@@ -28,10 +28,7 @@ struct Symbol * sym_rational_alloc(char * label, long int num, long int denom) {
 }
 
 struct Symbol * sym_rational_tmp_alloc(long int num, long int denom) {
-	struct Rational * i = (struct Rational *) jmalloc(sizeof(struct Rational));
-	i->num = num;
-	i->denom = denom;
-	return sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i);
+	return sym_rational_alloc(NULL, num, denom);
 }
 
 struct Symbol * sym_rational_add(struct Symbol * sym1, struct Symbol * sym2) {
@@ -40,7 +37,7 @@ struct Symbol * sym_rational_add(struct Symbol * sym1, struct Symbol * sym2) {
 	i->num = ((struct Rational *)sym1->data)->num * ((struct Rational *)sym2->data)->denom + 
 			 ((struct Rational *)sym2->data)->num * ((struct Rational *)sym1->data)->denom;
 	i->denom = ((struct Rational *)sym1->data)->denom * ((struct Rational *)sym2->data)->denom;
-	return sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i);
+	return sym_rational_normalize(sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i));
 }
 
 struct Symbol * sym_rational_sub(struct Symbol * sym1, struct Symbol * sym2) {
@@ -49,7 +46,7 @@ struct Symbol * sym_rational_sub(struct Symbol * sym1, struct Symbol * sym2) {
 	i->num = ((struct Rational *)sym1->data)->num * ((struct Rational *)sym2->data)->denom - 
 			 ((struct Rational *)sym2->data)->num * ((struct Rational *)sym1->data)->denom;
 	i->denom = ((struct Rational *)sym1->data)->denom * ((struct Rational *)sym2->data)->denom;
-	return sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i);
+	return sym_rational_normalize(sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i));
 }
 
 struct Symbol * sym_rational_mul(struct Symbol * sym1, struct Symbol * sym2) {
@@ -57,7 +54,7 @@ struct Symbol * sym_rational_mul(struct Symbol * sym1, struct Symbol * sym2) {
 
 	i->num = ((struct Rational *)sym1->data)->num * ((struct Rational *)sym2->data)->num; 
 	i->denom = ((struct Rational *)sym1->data)->denom * ((struct Rational *)sym2->data)->denom;
-	return sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i);
+	return sym_rational_normalize(sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i));
 }
 
 struct Symbol * sym_rational_div(struct Symbol * sym1, struct Symbol * sym2) {
@@ -65,19 +62,12 @@ struct Symbol * sym_rational_div(struct Symbol * sym1, struct Symbol * sym2) {
 
 	i->num = ((struct Rational *)sym1->data)->num * ((struct Rational *)sym2->data)->denom;
 	i->denom = ((struct Rational *)sym1->data)->denom * ((struct Rational *)sym2->data)->num;
-	return sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i);
+	return sym_rational_normalize(sym_alloc_shallow(SYM_TYPE_RATIONAL, 0, NULL, i));
 }
 
 struct Symbol * sym_rational_duplicate(struct Symbol * src) {
-	struct Rational * r = (struct Rational *) jmalloc(sizeof(struct Rational));
-	char * label;
 	
-	if (!((label = src->label) == NULL)) {
-		label = (char *) jmalloc(strlen(src->label) + 1);
-		strcpy(label, src->label);
-	}
-	memcpy((char *)r, (char *)src->data, sizeof(struct Rational));
-	return sym_alloc_shallow(SYM_TYPE_RATIONAL, src->is_constant, label, r);
+	return sym_alloc_deep(src->type, src->is_constant, src->label, src->data, sizeof(struct Rational));
 }
 
 struct Symbol * sym_rational_normalize(struct Symbol * src) {
@@ -101,19 +91,6 @@ int sym_rational_is_eq(struct Symbol * sym1, struct Symbol * sym2) {
 			 (((struct Rational *)sym1->data)->denom == (((struct Rational *)sym2->data)->denom))
 		   ) ? 1 : 0;
 }
-
-/*
-
-struct Symbol * sym_int_power(struct Symbol * a, struct Symbol * b) {
-	struct Symbol * s = sym_int_tmp_alloc(1);
-	int i = *(int *)b->data;
-	
-	while (i-- > 0)
-		*(int *)s->data *= *(int *)a->data;
-	return s;
-}
-
-*/
 
 void sym_rational_free(struct Symbol * isym) {
 	sym_free(isym);
