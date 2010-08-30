@@ -19,13 +19,15 @@
 
 
 #include "lib/arythm.h"
+#include "lib/functable.h"
 
 int main(int argc, char ** argv) {
 	
 	char * test;
 	int i;
 	struct WorkFlow * wf;
-	rb_tree * symtab;
+	rb_tree * symtab, * functab;
+	
 	struct Symbol * s, * q;
 	
 	test = malloc(1024);
@@ -33,7 +35,7 @@ int main(int argc, char ** argv) {
 	memstat_init();
 //	jmm_init();
 	symtab = symtable_init();
-	
+	functab = symtable_func_init();
 	
 	strcpy(test, "2/3+3/6");
 	
@@ -56,12 +58,6 @@ int main(int argc, char ** argv) {
 			case SYM_OPS_MUL:	printf("*"); break;
 			case SYM_OPS_DIV:	printf("/"); break;
 			case SYM_OPS_EXP:	printf("^"); break;
-			case SYM_MBOP_BAE:	printf(">="); break;
-			case SYM_MBOP_SAE:	printf("<="); break;
-			case SYM_MBOP_SSM:	printf("<"); break;
-			case SYM_MBOP_SBG:	printf(">"); break;
-			case SYM_MBOP_EQ:	printf("=="); break;
-			case SYM_MBOP_NOTEQ:	printf("!="); break;
 			case SYM_FUNC:		printf("%s", (char *)wf->ops[i].data); break;
 			default:			break;
 		}
@@ -99,7 +95,7 @@ int main(int argc, char ** argv) {
 	
 	
 	//printf("\n%lu\n", memstat_getstat()->allocations);
-	
+	symtable_shutdown(functab);
 	symtable_shutdown(symtab);
 	//memstat_debug();
 	memstat_shutdown();

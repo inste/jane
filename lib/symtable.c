@@ -51,30 +51,3 @@ int v(void * key, void * d) {
 	return 1;
 }
 
-/*
-
-int main(void) {
-	rb_tree * s;
-	int i;
-	
-	memstat_init();
-	jmm_init();
-	s = symtable_init();
-	
-	i = 15;
-	symtable_add_replace_symbol(s, sym_alloc_deep(SYM_TYPE_INTEGER, 0, "a", &i, sizeof(int)));
-	
-	i = 35;
-	symtable_add_replace_symbol(s, sym_alloc_deep(SYM_TYPE_INTEGER, 0, "q", &i, sizeof(int)));
-	
-	i = 16;
-	symtable_add_replace_symbol(s, sym_alloc_deep(SYM_TYPE_INTEGER, 0, "myvar", &i, sizeof(int)));	
-	
-	rb_tree_walk(s, (dict_visit_func)v);
-	
-	symtable_shutdown(s);
-	jmm_shutdown();
-	memstat_shutdown();
-	return 0;
-}
-*/

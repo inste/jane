@@ -34,13 +34,24 @@
 #define SYM_OPS_EXP		50  // Highest priority
 #define SYM_FUNC		60  // Function
 #define SYM_SYMBOL		70  // Variable or constant
+#define	SYM_VOID		0	// Nothing :)
 
 // Prio of operations
 
-#define PRIO_HIGH		3  // ^
-#define PRIO_MID		2  // *, /
-#define PRIO_LOW		1  // +, -
+#define PRIO_HIGHER				100  // ^
+#define PRIO_UPPER_MIDDLE		75	 // *, /
+#define PRIO_MIDDLE				50  // +, -
+#define	PRIO_UNDER_MIDDLE		25  // <, >, <=, >=
+#define	PRIO_LOW				0  // !=, ==
 
+// Multibyte operators shortcode
+
+#define	SYM_MBOP_EQ		100 // Equal
+#define	SYM_MBOP_NOTEQ	110 // Not equal
+#define	SYM_MBOP_SSM	120 // Strictly smaller
+#define	SYM_MBOP_SAE	130 // Smaller or equal
+#define	SYM_MBOP_SBG	140 // Strictly bigger
+#define	SYM_MBOP_BAE	150 // Equal or bigger
 
 // Working types
 
