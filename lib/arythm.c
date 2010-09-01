@@ -53,10 +53,8 @@ int inf_get_priority(int op) {
 	return -1;
 }
 
-int smb_is_function(char * smb) {
-	if (strcmp(smb, "sqr") == 0)
-		return 1;
-	return 0;
+int smb_is_function(rb_tree * functable, char * smb) {
+	return functable_is_func(functable, smb);
 }
 
 int is_digit(char ch) {
@@ -95,7 +93,7 @@ void inf_push_elements_from_stack_to_workflow(struct WorkFlow * wf, struct Stack
 }
 
 
-struct WorkFlow * inf_transform_to_reverse_postfix(char * expr) {
+struct WorkFlow * inf_transform_to_reverse_postfix(rb_tree * functable, char * expr) {
 	struct WorkFlow * wf = workflow_init();
 	struct Stack * stack = astack_alloc();
 	struct Atom * atom;
@@ -113,7 +111,7 @@ struct WorkFlow * inf_transform_to_reverse_postfix(char * expr) {
 			nmb[i - last] = '\0';
 
 			if (is_symbol(nmb[0])) {
-				if (smb_is_function(nmb)) {
+				if (smb_is_function(functable, nmb)) {
 					atom = atom_alloc(SYM_FUNC, nmb);
 					astack_push(stack, atom);
 				} else {
@@ -190,7 +188,7 @@ struct WorkFlow * inf_transform_to_reverse_postfix(char * expr) {
 	nmb[len - last] = '\0';
 
 	if (is_symbol(nmb[0])) {
-		if (smb_is_function(nmb)) {
+		if (smb_is_function(functable, nmb)) {
 			atom = atom_alloc(SYM_FUNC, nmb);
 			astack_push(stack, atom);
 		} else {

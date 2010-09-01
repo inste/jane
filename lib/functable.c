@@ -31,16 +31,21 @@ void functable_freeing_func(void * key, void * datum) {
 		sym_func_free(datum);
 }
 
+int functable_is_func(rb_tree * functable, char * label) {
+	return (symtable_search_for_symbol(functable, label) != NULL) ? 1 : 0;
+}
+
 int	functable_register_function(rb_tree * functable, struct Symbol * func) {
-	if (symtable_search_for_symbol(functable, func->label) != NULL)
+	if (!functable_is_func(functable, func->label))
 		warning("functable", "trying to register already registered function, overwriting");
 	
-	rb_tree_insert(functable, func->label, func, 1);
+	return rb_tree_insert(functable, func->label, func, 1);
 }
 
 struct Symbol * functable_calling_func(rb_tree * functable, char * label, int argc, struct Symbol ** args) {
 	struct Symbol * symfunc, * retval;
 	struct Function * func;
+	int i;
 	
 	if (functable == NULL)
 		error("functable", "uninitialiazed functable");
@@ -50,6 +55,13 @@ struct Symbol * functable_calling_func(rb_tree * functable, char * label, int ar
 		error("functable", "calling undefined function");
 		
 	func = (struct Function *)symfunc->data;
+	
+	if (argc != func->argc)
+		error("functable", "parameters mismatch");
+		
+	for (i = 0; i < argc; ++i)
+		if (args[i]->type != func->args_types[i])
+			error("functable", "wrong types of parameters");
 	
 	retval = sym_alloc_shallow(func->retvalue_type, 0, NULL, NULL);
 	func->callback(argc, args, retval);

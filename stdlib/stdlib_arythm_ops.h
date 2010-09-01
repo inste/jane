@@ -1,4 +1,4 @@
-//      arythm.h
+//      stdlib_arythm_ops.h
 //      
 //      Copyright 2010 Ilya <ilya@laptop>
 //      
@@ -17,33 +17,26 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-#ifndef _ARYTHM_H_
-#define _ARYTHM_H_
+
+#ifndef _STDLIB_ARYTHM_OPS_
+#define _STDLIB_ARYTHM_OPS_
 
 #include <stdio.h>
-#include <string.h>
 
-#include "const.h"
-#include "memory.h"
-#include "error.h"
-#include "stack.h"
-#include "atom.h"
-#include "workflow.h"
-#include "sym.h"
-#include "sym_rational_ops.h"
-#include "symtable.h"
-#include "postfix_interp.h"
-#include "functable.h"
+#include "../lib/error.h"
+#include "../lib/memory.h"
+#include "../lib/sym.h"
+#include "../lib/sym_rational_ops.h"
+#include "../lib/function.h"
+#include "../lib/functable.h"
 
-int inf_check_brackets(char * expr);
-int inf_get_priority(int op);
-int smb_is_function(rb_tree * functable, char * smb);
-int is_digit(char ch);
-int is_op(char ch);
-int is_symbol(char ch);
+/* Registering stdlib arythm functions */
 
-void inf_push_elements_from_stack_to_workflow(struct WorkFlow * wf, struct Stack * stack, int prio);
-struct WorkFlow * inf_transform_to_reverse_postfix(rb_tree * functable, char * expr);
+void stdlib_arythm_register(rb_tree * functable);
+
+void stdlib_arythm_rcmp_register(rb_tree * functable);
+
+void rcmp(int result_type, struct Symbol ** params, struct Symbol * result);
 
 
-#endif /* _ARYTHM_H_ */
+#endif /*  _STDLIB_ARYTHM_OPS_  */

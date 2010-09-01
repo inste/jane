@@ -28,18 +28,18 @@
 #include "memory.h"
 #include "sym.h"
 
+typedef void (*_callback)(int, struct Symbol **, struct Symbol *);
 
 struct Function {
 	int retvalue_type;
 	int argc;
 	int * args_types;
-	void (*callback)(int, struct Symbol **, struct Symbol *);
+	_callback callback;
 	char * label;
 };
 
 
-struct Symbol * sym_func_alloc(char * label, int retvalue_type, int argc, int * args_types,
-								void (*callback)(int, struct Symbol **, struct Symbol *));
+struct Symbol * sym_func_alloc(char * label, int retvalue_type, int argc, int * args_types, _callback callback);
 void sym_func_free(struct Symbol * func);
 
 

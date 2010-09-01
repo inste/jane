@@ -21,7 +21,7 @@
 #include "function.h"
 
 struct Symbol * sym_func_alloc(char * label, int retvalue_type, int argc, int * args_types,
-								void (*callback)(int, struct Symbol **, struct Symbol *)) {
+								_callback callback) {
 	struct Function * func = (struct Function *) jmalloc(sizeof(struct Function));
 	size_t	len = strlen(label);
 	

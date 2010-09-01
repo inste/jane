@@ -32,6 +32,7 @@
 rb_tree * symtable_func_init(void); // Redefinition
 void functable_freeing_func(void * key, void * datum);   // Redefinition for correct freeing of memory
 
+int functable_is_func(rb_tree * functable, char * label);
 
 int	functable_register_function(rb_tree * functable, struct Symbol * func);
 struct Symbol * functable_calling_func(rb_tree * functable, char * label, int argc, struct Symbol ** args);

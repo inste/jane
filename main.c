@@ -20,6 +20,7 @@
 
 #include "lib/arythm.h"
 #include "lib/functable.h"
+#include "stdlib/stdlib_arythm_ops.h"
 
 int main(int argc, char ** argv) {
 	
@@ -37,12 +38,14 @@ int main(int argc, char ** argv) {
 	symtab = symtable_init();
 	functab = symtable_func_init();
 	
+	stdlib_arythm_register(functab);
+	
 	strcpy(test, "2/3+3/6");
 	
 	if (inf_check_brackets(test))
 		printf("Correct!\n");
 	
-	wf = inf_transform_to_reverse_postfix(test);
+	wf = inf_transform_to_reverse_postfix(functab, test);
 
 	puts(test);
 	for(i = 0; i < wf->count; ++i) {
@@ -80,7 +83,7 @@ int main(int argc, char ** argv) {
 	
 	
 	strcpy(test, "(7*2)/12");
-	wf = inf_transform_to_reverse_postfix(test);
+	wf = inf_transform_to_reverse_postfix(functab, test);
 	q = process_postfix_workflow(wf, symtab);
 	
 	printf("%s = %ld/%ld\n", test, ((struct Rational *)q->data)->num, ((struct Rational *)q->data)->denom);

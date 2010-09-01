@@ -1,4 +1,4 @@
-//      arythm.h
+//      stdlib_arythm_ops.c
 //      
 //      Copyright 2010 Ilya <ilya@laptop>
 //      
@@ -17,33 +17,28 @@
 //      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 //      MA 02110-1301, USA.
 
-#ifndef _ARYTHM_H_
-#define _ARYTHM_H_
 
-#include <stdio.h>
-#include <string.h>
+#include "stdlib_arythm_ops.h"
 
-#include "const.h"
-#include "memory.h"
-#include "error.h"
-#include "stack.h"
-#include "atom.h"
-#include "workflow.h"
-#include "sym.h"
-#include "sym_rational_ops.h"
-#include "symtable.h"
-#include "postfix_interp.h"
-#include "functable.h"
+void stdlib_arythm_register(rb_tree * functable) {
+	stdlib_arythm_rcmp_register(functable);
+}
 
-int inf_check_brackets(char * expr);
-int inf_get_priority(int op);
-int smb_is_function(rb_tree * functable, char * smb);
-int is_digit(char ch);
-int is_op(char ch);
-int is_symbol(char ch);
-
-void inf_push_elements_from_stack_to_workflow(struct WorkFlow * wf, struct Stack * stack, int prio);
-struct WorkFlow * inf_transform_to_reverse_postfix(rb_tree * functable, char * expr);
+void stdlib_arythm_rcmp_register(rb_tree * functable) {
+	struct Function * func;
+	struct Symbol * sym;
+	int * types = (int *) jmalloc(sizeof(int) * 2);
+	
+	types[0] = types[1] = SYM_TYPE_RATIONAL;
+	func = sym_func_alloc("rcmp", SYM_TYPE_RATIONAL, 2, types, (_callback)rcmp);
+	sym = sym_alloc_deep(SYM_TYPE_FUNC, 1, func->label, (void *)func, sizeof(struct Function));
+	functable_register_function(functable, sym);
+}
 
 
-#endif /* _ARYTHM_H_ */
+void rcmp(int result_type, struct Symbol ** params, struct Symbol * result) {
+	struct Rational * r = (struct Rational *)result->data;
+	
+	r->denom = 1;
+	r->num = sym_rational_is_eq(params[0], params[1]);
+}
