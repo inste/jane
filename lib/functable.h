@@ -24,17 +24,23 @@
 #include <stdio.h>
 
 #include "memory.h"
-#include "sym.h"
-#include "symtable.h"
 #include "function.h"
+#include "sym.h"
+#include "rb_tree/dict.h"
+#include "rb_tree/rb_tree.h"
 
-
-rb_tree * symtable_func_init(void); // Redefinition
-void functable_freeing_func(void * key, void * datum);   // Redefinition for correct freeing of memory
+rb_tree * functable_init(void);
 
 int functable_is_func(rb_tree * functable, char * label);
-
-int	functable_register_function(rb_tree * functable, struct Symbol * func);
+void functable_register_function(rb_tree * functable, struct Function * func);
 struct Symbol * functable_calling_func(rb_tree * functable, char * label, int argc, struct Symbol ** args);
+struct Function * functable_get_function(rb_tree * functable, char * label);
+
+void functable_shutdown(rb_tree * tree);
+
+
+int functable_compare_func(const void * p1, const void * p2);
+void functable_freeing_func(void * key, void * datum);
+
 
 #endif /* _FUNCTABLE_H_ */

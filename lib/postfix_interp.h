@@ -30,9 +30,11 @@
 #include "sym.h"
 #include "symtable.h"
 #include "sym_rational_ops.h"
+#include "function.h"
+#include "functable.h"
 
 
-struct Symbol * process_postfix_workflow(struct WorkFlow * wf, rb_tree * symtab); 
+struct Symbol * process_postfix_workflow(struct WorkFlow * wf, rb_tree * symtab, rb_tree * functab); 
 
 
 #endif /* _POSTFIX_INTERP_H_ */

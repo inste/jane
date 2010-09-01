@@ -26,19 +26,16 @@ void stdlib_arythm_register(rb_tree * functable) {
 
 void stdlib_arythm_rcmp_register(rb_tree * functable) {
 	struct Function * func;
-	struct Symbol * sym;
 	int * types = (int *) jmalloc(sizeof(int) * 2);
-	
+
 	types[0] = types[1] = SYM_TYPE_RATIONAL;
-	func = sym_func_alloc("rcmp", SYM_TYPE_RATIONAL, 2, types, (_callback)rcmp);
-	sym = sym_alloc_deep(SYM_TYPE_FUNC, 1, func->label, (void *)func, sizeof(struct Function));
-	functable_register_function(functable, sym);
+	func = func_alloc("rcmp", SYM_TYPE_RATIONAL, 2, types, (_callback)rcmp);
+	functable_register_function(functable, func);
 }
 
 
-void rcmp(int result_type, struct Symbol ** params, struct Symbol * result) {
-	struct Rational * r = (struct Rational *)result->data;
-	
+void rcmp(int argc, struct Symbol ** params, struct Symbol * result) {
+	struct Rational * r = (struct Rational *)(result->data = jmalloc(sizeof(struct Rational)));
 	r->denom = 1;
 	r->num = sym_rational_is_eq(params[0], params[1]);
 }

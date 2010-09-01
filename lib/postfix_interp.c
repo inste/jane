@@ -49,10 +49,12 @@ void process_operator(struct Stack * symstack, rb_tree * symtab, int operator) {
 	symstack_push(symstack, symres);
 }
 
-struct Symbol * process_postfix_workflow(struct WorkFlow * wf, rb_tree * symtab) {
+struct Symbol * process_postfix_workflow(struct WorkFlow * wf, rb_tree * symtab, rb_tree * functab) {
 	struct Stack * symstack = symstack_alloc();
 	struct Symbol * s;
-	int i;
+	struct Symbol ** args;
+	struct Function * f;
+	int i, j;
 	
 	for(i = 0; i < wf->count; ++i) {
 		switch (wf->ops[i].id) {
@@ -64,6 +66,23 @@ struct Symbol * process_postfix_workflow(struct WorkFlow * wf, rb_tree * symtab)
 										error("postfix_interp", " search in symtable failed: not found");
 									else
 										symstack_push(symstack, s);
+									break;
+			case	SYM_FUNC:		if (functable_is_func(functab, (char *)wf->ops[i].data)) {
+										f = functable_get_function(functab, (char *)wf->ops[i].data);
+										args = (struct Symbol **) jmalloc(sizeof(struct Symbol *) * f->argc);
+										for (j = f->argc - 1; j >= 0; --j) {
+											if (symstack_isempty(symstack))
+												error("postfix_interp", "not enough arguments for function call");
+											args[j] = symstack_pop(symstack);
+										}
+										s = functable_calling_func(functab, (char *)wf->ops[i].data, f->argc, args);
+										symstack_push(symstack, s);
+										for (j = 0; j < f->argc; ++j)
+											sym_free(args[j]);
+										jfree(args);
+									}
+									else
+										error("postfix_interp", "calling undefined function");
 									break;
 			default:				process_operator(symstack, symtab, wf->ops[i].id);
 									break;

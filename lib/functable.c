@@ -20,42 +20,48 @@
 
 #include "functable.h"
 
-rb_tree * symtable_func_init(void) {	
+rb_tree * functable_init(void) {	
 	dict_set_malloc((dict_malloc_func)jmalloc);
 	dict_set_free((dict_free_func)jfree);
-	return rb_tree_new((dict_compare_func)symtable_compare_func, (dict_delete_func)functable_freeing_func);
+	return rb_tree_new((dict_compare_func)functable_compare_func, (dict_delete_func)functable_freeing_func);
 }
 
 void functable_freeing_func(void * key, void * datum) {
 	if (datum != NULL)
-		sym_func_free(datum);
+		func_free((struct Function *)datum);
+}
+
+int functable_compare_func(const void * p1, const void * p2) {
+	return strcmp((const char *)p1, (const char *)p2);
 }
 
 int functable_is_func(rb_tree * functable, char * label) {
-	return (symtable_search_for_symbol(functable, label) != NULL) ? 1 : 0;
+	return (rb_tree_search(functable, label) != NULL) ? 1 : 0;
 }
 
-int	functable_register_function(rb_tree * functable, struct Symbol * func) {
-	if (!functable_is_func(functable, func->label))
+void functable_register_function(rb_tree * functable, struct Function * func) {
+	if (functable_is_func(functable, func->label))
 		warning("functable", "trying to register already registered function, overwriting");
 	
-	return rb_tree_insert(functable, func->label, func, 1);
+	rb_tree_insert(functable, func->label, func, 1);
+}
+
+struct Function * functable_get_function(rb_tree * functable, char * label) {
+	if (!functable_is_func(functable, label))
+		error("functable", "trying to get unexisting function");
+		
+	return (struct Function *)rb_tree_search(functable, label);
 }
 
 struct Symbol * functable_calling_func(rb_tree * functable, char * label, int argc, struct Symbol ** args) {
-	struct Symbol * symfunc, * retval;
+	struct Symbol * retval;
 	struct Function * func;
 	int i;
 	
 	if (functable == NULL)
 		error("functable", "uninitialiazed functable");
 		
-	symfunc = symtable_search_for_symbol(functable, label);
-	if (symfunc == NULL)
-		error("functable", "calling undefined function");
-		
-	func = (struct Function *)symfunc->data;
-	
+	func = (struct Function *)rb_tree_search(functable, label);
 	if (argc != func->argc)
 		error("functable", "parameters mismatch");
 		
@@ -67,4 +73,8 @@ struct Symbol * functable_calling_func(rb_tree * functable, char * label, int ar
 	func->callback(argc, args, retval);
 	
 	return retval;
+}
+
+void functable_shutdown(rb_tree * tree) {
+	rb_tree_destroy(tree);
 }

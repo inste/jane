@@ -36,7 +36,7 @@ void stdlib_arythm_register(rb_tree * functable);
 
 void stdlib_arythm_rcmp_register(rb_tree * functable);
 
-void rcmp(int result_type, struct Symbol ** params, struct Symbol * result);
+void rcmp(int argc, struct Symbol ** params, struct Symbol * result);
 
 
 #endif /*  _STDLIB_ARYTHM_OPS_  */

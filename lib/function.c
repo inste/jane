@@ -20,7 +20,7 @@
 
 #include "function.h"
 
-struct Symbol * sym_func_alloc(char * label, int retvalue_type, int argc, int * args_types,
+struct Function * func_alloc(char * label, int retvalue_type, int argc, int * args_types,
 								_callback callback) {
 	struct Function * func = (struct Function *) jmalloc(sizeof(struct Function));
 	size_t	len = strlen(label);
@@ -37,20 +37,22 @@ struct Symbol * sym_func_alloc(char * label, int retvalue_type, int argc, int * 
 		error("function", "invalid parameters");
 	else {
 		func->label = (char *) jmalloc(len + 1);
-		memcpy(func->label, label, len);
-		label[len] = '\0';
+		memcpy((char *)func->label, (char *)label, sizeof(char) * len);
+		func->label[len] = '\0';
 	}
 	func->retvalue_type = retvalue_type;
 	if (callback == NULL)
 		error("function", "error in registering callback");
 	else
 		func->callback = callback;
-	return sym_alloc_shallow(SYM_TYPE_FUNC, 1, func->label, (void *)func);
+	return func;
 }
 
 
-void sym_func_free(struct Symbol * func) {
-	if ((((struct Function *)func->data)->args_types) != NULL)
-		jfree(((struct Function *)func->data)->args_types);
-	sym_free(func);
+void func_free(struct Function * func) {
+	if (func->args_types != NULL)
+		jfree(func->args_types);
+	if (func->label != NULL)
+		jfree(func->label);
+	jfree(func);
 }

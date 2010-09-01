@@ -39,8 +39,8 @@ struct Function {
 };
 
 
-struct Symbol * sym_func_alloc(char * label, int retvalue_type, int argc, int * args_types, _callback callback);
-void sym_func_free(struct Symbol * func);
+struct Function * func_alloc(char * label, int retvalue_type, int argc, int * args_types, _callback callback);
+void func_free(struct Function * func);
 
 
 #endif /* _FUNCTION_H_ */

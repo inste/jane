@@ -36,11 +36,11 @@ int main(int argc, char ** argv) {
 	memstat_init();
 //	jmm_init();
 	symtab = symtable_init();
-	functab = symtable_func_init();
+	functab = functable_init();
 	
 	stdlib_arythm_register(functab);
 	
-	strcpy(test, "2/3+3/6");
+	strcpy(test, "rcmp(rcmp(33, 34), rcmp(34, 35)) + 8");
 	
 	if (inf_check_brackets(test))
 		printf("Correct!\n");
@@ -70,7 +70,7 @@ int main(int argc, char ** argv) {
 	
 	
 	
-	s = process_postfix_workflow(wf, symtab);
+	s = process_postfix_workflow(wf, symtab, functab);
 	
 	printf("%s = %ld/%ld\n", test, ((struct Rational *)s->data)->num, ((struct Rational *)s->data)->denom);
 	
@@ -84,7 +84,7 @@ int main(int argc, char ** argv) {
 	
 	strcpy(test, "(7*2)/12");
 	wf = inf_transform_to_reverse_postfix(functab, test);
-	q = process_postfix_workflow(wf, symtab);
+	q = process_postfix_workflow(wf, symtab, functab);
 	
 	printf("%s = %ld/%ld\n", test, ((struct Rational *)q->data)->num, ((struct Rational *)q->data)->denom);
 	
@@ -96,11 +96,10 @@ int main(int argc, char ** argv) {
 	workflow_free(wf);
 	free(test);
 	
-	
-	//printf("\n%lu\n", memstat_getstat()->allocations);
-	symtable_shutdown(functab);
+
+	functable_shutdown(functab);
 	symtable_shutdown(symtab);
-	//memstat_debug();
+
 	memstat_shutdown();
 	
 	return 0;
